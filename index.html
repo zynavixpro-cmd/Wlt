@@ -3,211 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BRD Crypto Extension</title>
+    <title>BRD Wallet Extension</title>
     <style>
         :root {
             --bg-deep: #1a1438;
             --bg-keypad: #231b4d;
             --accent-blue: #31aade;
+            --text-gray: #8e8e93;
             --btc-grad: linear-gradient(135deg, #f7931a, #ffab44);
             --eth-grad: linear-gradient(135deg, #627eea, #8da2f2);
             --brd-grad: linear-gradient(135deg, #ff5e62, #ff9966);
-            --bnb-grad: linear-gradient(135deg, #f3ba2f, #f8d33a);
-            --bch-grad: linear-gradient(135deg, #8dc351, #b2d98c);
         }
 
-        /* ضبط مقاسات الإضافة لتكون مثالية للمتصفح */
         body, html {
             margin: 0; padding: 0;
-            width: 360px; 
-            height: 580px;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            width: 360px; height: 580px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica;
             background-color: var(--bg-deep);
             color: white;
             overflow: hidden;
         }
 
-        .page {
-            display: none;
-            width: 100%; 
-            height: 100%;
-            flex-direction: column;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
+        .page { display: none; width: 100%; height: 100%; flex-direction: column; }
         .active { display: flex; }
 
-        /* --- Page 1: Welcome (Clean Look) --- */
-        #landing-page {
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            background: radial-gradient(circle at center, #2d235d 0%, #1a1438 100%);
-        }
+        /* --- PAGE 1: START --- */
+        #landing-page { justify-content: center; align-items: center; text-align: center; }
+        .welcome-title { font-size: 50px; font-weight: 900; background: var(--brd-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .start-btn { margin-top: 30px; background: var(--accent-blue); color: white; border: none; padding: 15px 50px; border-radius: 30px; font-weight: bold; cursor: pointer; }
 
-        .welcome-title {
-            font-size: 48px;
-            font-weight: 900;
-            margin-bottom: 10px;
-            background: var(--brd-grad);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .welcome-sub {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.6);
-            margin-bottom: 50px;
-            letter-spacing: 1px;
-        }
-
-        .start-btn {
-            background: var(--accent-blue);
-            color: white;
-            border: none;
-            padding: 15px 60px;
-            border-radius: 30px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(49, 170, 222, 0.4);
-        }
-
-        .start-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(49, 170, 222, 0.6);
-        }
-
-        /* --- Page 2: Dashboard --- */
+        /* --- PAGE 2: DASHBOARD (Updated with Icons) --- */
         #dashboard-page { padding: 20px; box-sizing: border-box; }
+        .header-logo { font-size: 28px; font-weight: 800; margin-bottom: 25px; background: var(--brd-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        .header-logo { 
-            font-size: 28px; font-weight: 800; margin-bottom: 20px;
-            background: var(--brd-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-
-        .crypto-list { overflow-y: auto; flex: 1; padding-right: 5px; }
-        .crypto-list::-webkit-scrollbar { width: 4px; }
-        .crypto-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-
         .crypto-card {
             display: flex; align-items: center; padding: 16px;
             border-radius: 12px; margin-bottom: 12px; cursor: pointer;
-            transition: 0.2s; border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.2s; position: relative;
         }
-
-        .crypto-card:hover { transform: translateX(5px); }
-
-        .card-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-right: 15px; }
+        .crypto-card:hover { transform: scale(1.02); }
+        .card-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-right: 15px; }
         .card-info { flex: 1; }
         .card-info .name { display: block; font-weight: bold; font-size: 16px; }
         .card-info .rate { font-size: 11px; opacity: 0.7; }
-        .card-values { text-align: right; }
-        .card-values .total { display: block; font-weight: bold; font-size: 16px; }
-        .card-values .balance { font-size: 11px; opacity: 0.8; }
+        
+        /* الأيقونة التي طلبتها للضغط */
+        .arrow-icon { font-size: 18px; opacity: 0.5; margin-left: 10px; transition: 0.3s; }
+        .crypto-card:hover .arrow-icon { opacity: 1; transform: translateX(3px); }
 
-        /* --- Page 3: Buy/Calculator --- */
-        #buy-page { background: var(--bg-keypad); }
-        .buy-header { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); align-items: center; }
+        /* --- PAGE 3: CALCULATOR (Image 1 Style) --- */
+        #calc-page { background: #f4f7f9; color: #333; }
+        .calc-header { background: var(--bg-keypad); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
         
-        .input-box { background: white; padding: 25px; color: #333; display: flex; justify-content: space-between; align-items: center; }
-        .input-label { color: var(--accent-blue); font-size: 12px; font-weight: bold; margin-bottom: 5px; }
-        .input-amount { font-size: 34px; font-weight: 300; }
+        .calc-input-section { background: white; padding: 20px; border-bottom: 1px solid #eee; }
+        .input-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .label { color: var(--accent-blue); font-size: 12px; font-weight: bold; text-transform: uppercase; }
+        .val-container { display: flex; align-items: baseline; }
+        .main-val { font-size: 32px; font-weight: 400; color: #000; }
+        .currency-tag { margin-left: 10px; font-weight: bold; color: #555; display: flex; align-items: center; gap: 5px; cursor: pointer; }
         
-        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); flex: 1; padding: 10px; }
-        .key { display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; transition: 0.1s; color: white; }
-        .key:active { background: rgba(255,255,255,0.1); border-radius: 50%; }
-        
-        .next-btn { background: var(--accent-blue); padding: 20px; text-align: center; font-weight: bold; cursor: pointer; border: none; color: white; font-size: 16px; }
+        .receive-box { background: #f9f9f9; padding: 20px; border-bottom: 1px solid #eee; }
+        .receive-val { font-size: 24px; color: #999; }
+
+        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--bg-keypad); flex: 1; }
+        .key { display: flex; align-items: center; justify-content: center; font-size: 24px; color: white; cursor: pointer; border: 0.1px solid rgba(255,255,255,0.02); }
+        .key:active { background: rgba(255,255,255,0.1); }
+        .next-action { background: var(--accent-blue); color: white; padding: 20px; text-align: center; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div id="landing-page" class="page active">
         <div class="welcome-title">BRD</div>
-        <div class="welcome-sub">MOVE YOUR MONEY FORWARD</div>
         <button class="start-btn" onclick="showPage('dashboard-page')">GET STARTED</button>
     </div>
 
     <div id="dashboard-page" class="page">
         <div class="header-logo">BRD</div>
         
-        <div class="crypto-list">
-            <div class="crypto-card" style="background: var(--btc-grad);" onclick="showPage('buy-page')">
-                <div class="card-icon">₿</div>
-                <div class="card-info"><span class="name">Bitcoin</span><span class="rate">$64,250.00 per BTC</span></div>
-                <div class="card-values"><span class="total">$4,188.89</span><span class="balance">0.0652 BTC</span></div>
-            </div>
+        <div class="crypto-card" style="background: var(--btc-grad);" onclick="openCalc('BTC', 64250)">
+            <div class="card-icon">₿</div>
+            <div class="card-info"><span class="name">Bitcoin</span><span class="rate">$64,250.00 per BTC</span></div>
+            <div class="arrow-icon">❯</div>
+        </div>
 
-            <div class="crypto-card" style="background: var(--eth-grad);">
-                <div class="card-icon">Ξ</div>
-                <div class="card-info"><span class="name">Ethereum</span><span class="rate">$3,450.12 per ETH</span></div>
-                <div class="card-values"><span class="total">$409.78</span><span class="balance">0.1187 ETH</span></div>
-            </div>
-
-            <div class="crypto-card" style="background: var(--brd-grad);">
-                <div class="card-icon">B</div>
-                <div class="card-info"><span class="name">BRD Token</span><span class="rate">$0.20 per BRD</span></div>
-                <div class="card-values"><span class="total">$3,033.01</span><span class="balance">15,459 BRD</span></div>
-            </div>
-
-            <div class="crypto-card" style="background: var(--bnb-grad);">
-                <div class="card-icon">◈</div>
-                <div class="card-info"><span class="name">Binance Coin</span><span class="rate">$580.36 per BNB</span></div>
-                <div class="card-values"><span class="total">$1,420.07</span><span class="balance">2.44 BNB</span></div>
-            </div>
+        <div class="crypto-card" style="background: var(--eth-grad);" onclick="openCalc('ETH', 3450)">
+            <div class="card-icon">Ξ</div>
+            <div class="card-info"><span class="name">Ethereum</span><span class="rate">$3,450.12 per ETH</span></div>
+            <div class="arrow-icon">❯</div>
         </div>
     </div>
 
-    <div id="buy-page" class="page">
-        <div class="buy-header">
-            <span style="cursor:pointer; font-size: 20px;" onclick="showPage('dashboard-page')">✕</span>
-            <span style="font-size: 12px; font-weight: bold; opacity: 0.8;">1 BTC = $64,250.56</span>
-            <div style="width: 20px;"></div>
+    <div id="calc-page" class="page">
+        <div class="calc-header">
+            <span onclick="showPage('dashboard-page')" style="cursor:pointer">✕</span>
+            <span id="live-rate" style="font-size: 12px;">1 BTC = $64,250.56</span>
+            <span></span>
         </div>
 
-        <div class="input-box">
-            <div>
-                <div class="input-label">Pay With</div>
-                <div class="input-amount">$<span id="amount-val">50</span></div>
+        <div class="calc-input-section">
+            <div class="label">Pay With</div>
+            <div class="input-row">
+                <div class="main-val">$<span id="usd-display">50</span></div>
+                <div class="currency-tag">🇺🇸 USD ▾</div>
             </div>
-            <div style="font-weight: bold; color: #333;">USD ▾</div>
+        </div>
+
+        <div class="receive-box">
+            <div class="label">Receive</div>
+            <div class="input-row">
+                <div class="receive-val" id="crypto-display">0.00077821</div>
+                <div class="currency-tag" id="target-coin">BTC ▾</div>
+            </div>
         </div>
 
         <div class="keypad">
-            <div class="key" onclick="typeNum('1')">1</div><div class="key" onclick="typeNum('2')">2</div><div class="key" onclick="typeNum('3')">3</div>
-            <div class="key" onclick="typeNum('4')">4</div><div class="key" onclick="typeNum('5')">5</div><div class="key" onclick="typeNum('6')">6</div>
-            <div class="key" onclick="typeNum('7')">7</div><div class="key" onclick="typeNum('8')">8</div><div class="key" onclick="typeNum('9')">9</div>
-            <div class="key" onclick="typeNum('.')">.</div><div class="key" onclick="typeNum('0')">0</div><div class="key" onclick="typeNum('del')">⌫</div>
+            <div class="key" onclick="press('1')">1</div><div class="key" onclick="press('2')">2</div><div class="key" onclick="press('3')">3</div>
+            <div class="key" onclick="press('4')">4</div><div class="key" onclick="press('5')">5</div><div class="key" onclick="press('6')">6</div>
+            <div class="key" onclick="press('7')">7</div><div class="key" onclick="press('8')">8</div><div class="key" onclick="press('9')">9</div>
+            <div class="key" onclick="press('.')">.</div><div class="key" onclick="press('0')">0</div><div class="key" onclick="press('del')">⌫</div>
         </div>
 
-        <button class="next-btn">NEXT</button>
+        <div class="next-action">NEXT</div>
     </div>
 
     <script>
-        // Navigation Logic
-        function showPage(pageId) {
+        let currentUSD = "50";
+        let activeRate = 64250;
+
+        function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
+            document.getElementById(id).classList.add('active');
         }
 
-        // Keypad Logic
-        let currentAmount = "50";
-        function typeNum(val) {
-            const display = document.getElementById('amount-val');
-            if(val === 'del') {
-                currentAmount = currentAmount.length > 1 ? currentAmount.slice(0, -1) : "0";
+        function openCalc(coin, rate) {
+            activeRate = rate;
+            document.getElementById('target-coin').innerText = coin + " ▾";
+            document.getElementById('live-rate').innerText = `1 ${coin} = $${rate.toLocaleString()}`;
+            updateValues();
+            showPage('calc-page');
+        }
+
+        function press(num) {
+            if(num === 'del') {
+                currentUSD = currentUSD.length > 1 ? currentUSD.slice(0, -1) : "0";
             } else {
-                if(currentAmount === "0" && val !== '.') currentAmount = val;
-                else if(currentAmount.length < 8) currentAmount += val;
+                if(currentUSD === "0" && num !== '.') currentUSD = num;
+                else if(currentUSD.length < 9) currentUSD += num;
             }
-            display.innerText = currentAmount;
+            updateValues();
+        }
+
+        function updateValues() {
+            document.getElementById('usd-display').innerText = currentUSD;
+            const cryptoResult = parseFloat(currentUSD) / activeRate;
+            document.getElementById('crypto-display').innerText = cryptoResult.toFixed(8);
         }
     </script>
 </body>
