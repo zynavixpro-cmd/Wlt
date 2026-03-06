@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRD Wallet Extension</title>
+    <style>
+        :root {
+            --bg-deep: #1a1438;
+            --bg-keypad: #231b4d;
+            --accent-blue: #31aade;
+            --btc-grad: linear-gradient(135deg, #f7931a, #ffab44);
+            --eth-grad: linear-gradient(135deg, #627eea, #8da2f2);
+            --brd-grad: linear-gradient(135deg, #ff5e62, #ff9966);
+            --bnb-grad: linear-gradient(135deg, #f3ba2f, #f8d33a);
+            --bch-grad: linear-gradient(135deg, #8dc351, #b2d98c);
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            width: 360px; height: 600px;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-deep);
+            color: white;
+            overflow: hidden;
+        }
+
+        .page {
+            display: none; /* إخفاء الصفحات افتراضياً */
+            width: 100%; height: 100%;
+            flex-direction: column;
+        }
+
+        .active { display: flex; }
+
+        /* --- Page 1: Landing (Image 3) --- */
+        #landing-page {
+            background: radial-gradient(circle at center, #2d235d 0%, #1a1438 100%);
+            text-align: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .stars-bg { position: absolute; top: 0; width: 100%; opacity: 0.5; }
+        .hero-text { font-size: 22px; font-weight: bold; margin-bottom: 40px; line-height: 1.4; }
+        .world-map { width: 100%; margin-top: 20px; }
+        .footer-logo { margin-top: auto; padding-bottom: 40px; cursor: pointer; }
+        .footer-logo img { width: 80px; }
+
+        /* --- Page 2: Dashboard (Image 2) --- */
+        #dashboard-page { padding: 20px; }
+        .header-logo { 
+            font-size: 32px; font-weight: 800; margin-bottom: 25px;
+            background: var(--brd-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .crypto-card {
+            display: flex; align-items: center; padding: 16px;
+            border-radius: 12px; margin-bottom: 12px; cursor: pointer;
+            transition: 0.2s;
+        }
+        .crypto-card:active { transform: scale(0.98); }
+        .card-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-right: 15px; }
+        .card-info { flex: 1; }
+        .card-info .name { display: block; font-weight: bold; font-size: 17px; }
+        .card-info .rate { font-size: 12px; opacity: 0.7; }
+        .card-values { text-align: right; }
+        .card-values .total { display: block; font-weight: bold; font-size: 17px; }
+        .card-values .balance { font-size: 12px; opacity: 0.8; }
+
+        /* --- Page 3: Buy/Keypad (Image 1) --- */
+        #buy-page { background: var(--bg-keypad); }
+        .buy-header { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); align-items: center; }
+        .input-box { background: white; padding: 25px; color: #333; display: flex; justify-content: space-between; align-items: center; }
+        .input-label { color: var(--accent-blue); font-size: 12px; font-weight: bold; margin-bottom: 5px; }
+        .input-amount { font-size: 36px; font-weight: 400; }
+        .currency-selector { display: flex; align-items: center; color: #333; gap: 5px; font-weight: bold; border-left: 1px solid #ddd; padding-left: 15px; }
+        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); flex: 1; padding: 10px; }
+        .key { display: flex; align-items: center; justify-content: center; font-size: 26px; cursor: pointer; transition: 0.2s; }
+        .key:active { background: rgba(255,255,255,0.1); border-radius: 50%; }
+        .next-btn { background: var(--accent-blue); padding: 18px; text-align: center; font-weight: bold; letter-spacing: 1px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div id="landing-page" class="page active">
+        <div class="hero-text">The oldest and most trusted<br>global wallet.</div>
+        <img src="https://i.imgur.com/8m5k2Yk.png" class="world-map" alt="map">
+        <div class="footer-logo" onclick="showPage('dashboard-page')">
+            <div style="font-size: 40px; font-weight: 900; background: var(--brd-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">BRD</div>
+            <p style="font-size: 14px; opacity: 0.8;">Move your money forward.</p>
+        </div>
+    </div>
+
+    <div id="dashboard-page" class="page">
+        <div class="header-logo">BRD</div>
+        
+        <div class="crypto-card" style="background: var(--btc-grad);" onclick="showPage('buy-page')">
+            <div class="card-icon">₿</div>
+            <div class="card-info"><span class="name">Bitcoin</span><span class="rate">$3,755.51 per BTC</span></div>
+            <div class="card-values"><span class="total">$4,188.89</span><span class="balance">1.1154 BTC</span></div>
+        </div>
+
+        <div class="crypto-card" style="background: var(--eth-grad);">
+            <div class="card-icon">Ξ</div>
+            <div class="card-info"><span class="name">Ethereum</span><span class="rate">$101.61 per ETH</span></div>
+            <div class="card-values"><span class="total">$409.78</span><span class="balance">4.0329 ETH</span></div>
+        </div>
+
+        <div class="crypto-card" style="background: var(--brd-grad);">
+            <div class="card-icon">B</div>
+            <div class="card-info"><span class="name">BRD Token</span><span class="rate">$0.20 per BRD</span></div>
+            <div class="card-values"><span class="total">$3,033.01</span><span class="balance">15,459.02 BRD</span></div>
+        </div>
+        
+        <div class="crypto-card" style="background: var(--bnb-grad);">
+            <div class="card-icon">◈</div>
+            <div class="card-info"><span class="name">Binance Coin</span><span class="rate">$5.36 per BNB</span></div>
+            <div class="card-values"><span class="total">$1,420.07</span><span class="balance">264.94 BNB</span></div>
+        </div>
+    </div>
+
+    <div id="buy-page" class="page">
+        <div class="buy-header">
+            <span style="cursor:pointer" onclick="showPage('dashboard-page')">✕</span>
+            <span style="font-size: 12px; font-weight: bold;">1 BTC = $4,480.56</span>
+            <span></span>
+        </div>
+
+        <div class="input-box">
+            <div>
+                <div class="input-label">Pay With</div>
+                <div class="input-amount">$<span id="amount-val">50</span></div>
+            </div>
+            <div class="currency-selector">🇺🇸 USD ▾</div>
+        </div>
+
+        <div class="keypad">
+            <div class="key" onclick="typeNum('1')">1</div><div class="key" onclick="typeNum('2')">2</div><div class="key" onclick="typeNum('3')">3</div>
+            <div class="key" onclick="typeNum('4')">4</div><div class="key" onclick="typeNum('5')">5</div><div class="key" onclick="typeNum('6')">6</div>
+            <div class="key" onclick="typeNum('7')">7</div><div class="key" onclick="typeNum('8')">8</div><div class="key" onclick="typeNum('9')">9</div>
+            <div class="key" onclick="typeNum('.')">.</div><div class="key" onclick="typeNum('0')">0</div><div class="key" onclick="typeNum('del')">⌫</div>
+        </div>
+
+        <div class="next-btn">NEXT</div>
+    </div>
+
+    <script>
+        // نظام التنقل بين الصفحات
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        // لوحة المفاتيح
+        let currentAmount = "50";
+        function typeNum(val) {
+            const display = document.getElementById('amount-val');
+            if(val === 'del') {
+                currentAmount = currentAmount.length > 1 ? currentAmount.slice(0, -1) : "0";
+            } else {
+                if(currentAmount === "0") currentAmount = val;
+                else currentAmount += val;
+            }
+            display.innerText = currentAmount;
+        }
+    </script>
+</body>
+</html>
